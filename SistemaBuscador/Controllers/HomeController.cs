@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SistemaBuscador.Models;
+using SistemaBuscador.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,20 +27,42 @@ namespace SistemaBuscador.Controllers
         [HttpPost]
         public IActionResult Login(LoginViewModel model)
         {
-            if (!ModelState.IsValid)
+            var repo = new LoginRepository();
+            if (ModelState.IsValid)
             {
-                return View("Index",model);
+                if (repo.UserExist(model.Usuario, model.Password))
+                {
+                    Guid sesionId = Guid.NewGuid();
+                    HttpContext.Session.SetString("sessionId", sesionId.ToString());
+                    Response.Cookies.Append("sessionId", sesionId.ToString());
+                    return View("Privacy");
+                }
+                else{
+                    ModelState.AddModelError(string.Empty, "El Usuario o contraseña no es valido");
+                }
             }
-            return View("Privacy");
+            return View("Index",model);
+            
         }
+
 
         public IActionResult Privacy()
         {
+            string sessionId = Request.Cookies["sessionId"];
+            if(string.IsNullOrEmpty(sessionId) || !sessionId.Equals(HttpContext.Session.GetString("sessionId")))
+            {
+                return RedirectToAction("Index");
+            }
             return View();
         }
 
         public IActionResult Prueba()
         {
+            string sessionId = Request.Cookies["sessionId"];
+            if (string.IsNullOrEmpty(sessionId) || !sessionId.Equals(HttpContext.Session.GetString("sessionId")))
+            {
+                return RedirectToAction("Index");
+            }
             return View();
         }
 
