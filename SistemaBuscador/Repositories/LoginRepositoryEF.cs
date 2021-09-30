@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,15 +9,18 @@ namespace SistemaBuscador.Repositories
 {
     public class LoginRepositoryEF : ILoginRepository
     {
-        private readonly ApplicationDbContext context;
+        private readonly ApplicationDbContext _context;
 
-        public LoginRepositoryEF(ApplicationDbContext _context)
+        public LoginRepositoryEF(ApplicationDbContext context)
         {
             _context = context;
         }
+
         public void SetSessionAndCookie(HttpContext context)
         {
-            throw new NotImplementedException();
+            Guid sesionId = Guid.NewGuid();
+            context.Session.SetString("sessionId", sesionId.ToString());
+            context.Response.Cookies.Append("sessionId", sesionId.ToString());
         }
 
         public async Task<bool> UserExist(string usuario, string password)
@@ -25,8 +29,8 @@ namespace SistemaBuscador.Repositories
 
             //logica que ocupa EF
 
-            var usuarioBD = context.Usuarios
-                .FirstOrDefault(x => x.NombreUsuario == usuario && x.Password == password);
+            var usuarioBD = await _context.Usuarios
+                .FirstOrDefaultAsync(x => x.NombreUsuario == usuario && x.Password == password);
 
             if(usuarioBD!=null)
             {

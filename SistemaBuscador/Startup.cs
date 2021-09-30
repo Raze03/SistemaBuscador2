@@ -30,7 +30,7 @@ namespace SistemaBuscador
             services.AddDistributedMemoryCache();
             services.AddSession();
             services.AddTransient<SessionFilter>();
-            services.AddScoped<ILoginRepository, LoginRepository>();
+            services.AddScoped<ILoginRepository, LoginRepositoryEF>();
             services.AddDbContext<ApplicationDbContext>(options=>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
         }
