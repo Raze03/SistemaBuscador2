@@ -1,5 +1,6 @@
 ﻿using SistemaBuscador.Entities;
 using SistemaBuscador.Models;
+using SistemaBuscador.Utilidades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,12 @@ namespace SistemaBuscador.Repositories
     public class UsuarioRepository : IUsuarioRepository
     {
         private readonly ApplicationDbContext _context;
+        private readonly ISeguridad _seguridad;
 
-        public UsuarioRepository(ApplicationDbContext context)
+        public UsuarioRepository(ApplicationDbContext context, ISeguridad seguridad)
         {
             _context = context;
+            _seguridad = seguridad;
         }
         public async Task InsertatUsuario(UsuarioCreacionModel model)
         {
@@ -23,7 +26,7 @@ namespace SistemaBuscador.Repositories
                 Nombres = model.Nombres,
                 Apellidos = model.Apellidos,
                 RolId = (int)model.RolId,
-                Password = model.Password
+                Password = _seguridad.Encriptar(model.Password)
             };
 
             _context.Usuarios.Add(nuevoUsuario);
