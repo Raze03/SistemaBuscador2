@@ -13,6 +13,7 @@ namespace SistemaBuscador.Entities
         public string NombreUsuario { get; set; }
         public int RolId { get; set; }
         public string Password { get; set; }
+        public Rol Rol { get; set; }
 
     }
 }
