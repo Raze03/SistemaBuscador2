@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SistemaBuscador.Models;
 using SistemaBuscador.Repositories;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,51 @@ namespace SistemaBuscador.Controllers
         public IActionResult NuevoRol()
         {
             return View();
-        } 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> NuevoRol(RolCreacionModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                //Guardar en la bd
+                await _repositorio.InsertarRol(model);
+                return RedirectToAction("Index");
+            }
+            return View(model);
+        }
+
+        public async Task<IActionResult> ActualizarRol(int id)
+        {
+            var rol = await _repositorio.ObtenerRolPorId(id);
+            return View(rol);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ActualizarRol(RolEdicionModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                //Actualizar en la bd
+                await _repositorio.ActualizarRol(model);
+                return RedirectToAction("Index");
+
+            }
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> EliminarRol(int id)
+        {
+            var rol = await _repositorio.ObtenerRolPorId(id);
+            return View(rol);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EliminarRol(RolEdicionModel model)
+        {
+            await _repositorio.EliminarRol(model.Id);
+            return RedirectToAction("Index");
+        }
     }
 }
