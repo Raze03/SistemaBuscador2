@@ -14,19 +14,21 @@ namespace SistemaBuscador.Test.PruebasUnitarias.Controladores
     [TestClass]
     public class UsuarioControllerTest
     {
+              
         [TestMethod]
-        public async Task NuevoUsuarioExiste()
+        public async Task NuevoUsuario_modelo_valido()
         {
             //Preparacion
-            var usuario = new Mock<IUsuarioRepository>();
+            var listausuarios = new Mock<IUsuarioRepository>();
             var model = new UsuarioCreacionModel();
-            var controller = new UsuariosController(usuario.Object);
+            var controller = new UsuariosController(listausuarios.Object);
 
             //Ejecucio
-            var resultado = await controller.NuevoUsuarioExiste(model) as RedirectToActionResult;
+            var resultado = await controller.NuevoUsuario(model) as RedirectToActionResult;
 
             //Validacion
             Assert.AreEqual(resultado.ActionName, "Index");
-        }
+
+        }    
     }
 }

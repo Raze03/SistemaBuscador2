@@ -29,7 +29,7 @@ namespace SistemaBuscador.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> NuevoUsuarioExiste(UsuarioCreacionModel model)
+        public async Task<IActionResult> NuevoUsuario(UsuarioCreacionModel model)
         {
             if (ModelState.IsValid)
             {
